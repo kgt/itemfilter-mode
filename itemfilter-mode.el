@@ -186,6 +186,13 @@
 (defconst itemfilter-constant-re
   (concat "\\<" (regexp-opt itemfilter-constant-keywords) "\\>"))
 
+(defvar itemfilter-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [remap beginning-of-defun] 'itemfilter-beginning-of-block)
+    (define-key map [remap end-of-defun] 'itemfilter-end-of-block)
+    (define-key map [remap mark-defun] 'itemfilter-mark-block)
+    map))
+
 (defvar itemfilter-mode-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\" "\"" table)
@@ -232,6 +239,48 @@
 	 ;; line after a comment line
 	 ((looking-at-p "^\\s-*\\s<")
 	  (current-indentation))))))))
+
+(defun itemfilter-beginning-of-block (&optional arg)
+  "Move backward to the beginning of a block.
+With ARG, do it that many times.
+Negative ARG means move forward."
+  (interactive "p")
+  (let ((forward (and arg (< arg 0)))
+        (case-fold-search nil)
+        pos)
+    (save-excursion
+      (save-match-data
+        ;; To match if the current point is on block keyword if backward.
+        ;; Not to match if the current point is at beginning of block if forward.
+        (when (not (xor forward (bolp)))
+          (forward-line))
+        (when (re-search-backward itemfilter-block-like-re nil t arg)
+          (setq pos (match-beginning 0)))))
+    (goto-char (or pos (if forward (point-max) (point-min))))
+    (when pos t)))
+
+(defun itemfilter-end-of-block (&optional arg)
+  "Move forward to the end of a block.
+With ARG, do it that many times.
+Negative ARG means move backward."
+  (interactive "p")
+  (itemfilter-beginning-of-block (- (or arg 1))))
+
+(defun itemfilter-mark-block (&optional arg)
+  "Put mark at end of a block, point at beginning.
+With ARG, mark that many following blocks.
+Negative ARG means mark preceding blocks."
+  (interactive "p")
+  (let ((backward (and arg (< arg 0))))
+    (cond (backward
+           (itemfilter-end-of-block)
+           (push-mark)
+           (itemfilter-beginning-of-block (- arg)))
+          (t
+           (itemfilter-beginning-of-block)
+           (save-excursion
+             (itemfilter-end-of-block arg)
+             (push-mark))))))
 
 ;;;###autoload
 (define-derived-mode itemfilter-mode prog-mode "ItemFilter"
