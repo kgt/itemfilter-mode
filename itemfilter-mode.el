@@ -90,6 +90,7 @@
     "SynthesisedItem"
     "TransfiguredGem"
     "UberBlightedMap"
+    "WaystoneTier"
     "Width"))
 
 (defconst itemfilter-action-keywords
