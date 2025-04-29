@@ -186,6 +186,14 @@
 (defconst itemfilter-constant-re
   (concat "\\<" (regexp-opt itemfilter-constant-keywords) "\\>"))
 
+(defconst itemfilter-completion-keywords
+  (append itemfilter-block-keywords
+          itemfilter-block-like-keywords
+          itemfilter-condition-keywords
+          itemfilter-action-keywords
+          itemfilter-action-like-keywords
+          itemfilter-constant-keywords))
+
 (defvar itemfilter-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [remap beginning-of-defun] 'itemfilter-beginning-of-block)
@@ -282,6 +290,15 @@ Negative ARG means mark preceding blocks."
              (itemfilter-end-of-block arg)
              (push-mark))))))
 
+(defun itemfilter-completion-at-point ()
+  "Function for `completion-at-point-functions' in `itemfilter-mode'."
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when (and bounds (not (nth 8 (syntax-ppss))))
+      ;; TODO: contextual completion
+      (list (car bounds)
+            (cdr bounds)
+            itemfilter-completion-keywords))))
+
 ;;;###autoload
 (define-derived-mode itemfilter-mode prog-mode "ItemFilter"
   "Major mode for editing Path of Exile item filters."
@@ -291,7 +308,9 @@ Negative ARG means mark preceding blocks."
   (setq font-lock-defaults '(itemfilter-font-lock-keywords))
 
   (setq tab-width itemfilter-indent-level)
-  (setq-local indent-line-function 'itemfilter-indent-line))
+  (setq-local indent-line-function 'itemfilter-indent-line)
+
+  (add-hook 'completion-at-point-functions #'itemfilter-completion-at-point nil t))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(?:ruthless\\)?filter\\'" . itemfilter-mode))
