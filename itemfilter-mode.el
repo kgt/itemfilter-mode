@@ -159,33 +159,33 @@
     "Temp"))
 
 (defconst itemfilter-block-re
-  (concat "^\\s-*" (regexp-opt itemfilter-block-keywords t) "\\>"))
+  (concat "^\\s-*" (regexp-opt itemfilter-block-keywords t) "\\_>"))
 
 (defconst itemfilter-block-like-re
   (concat "^\\s-*"
 	  (regexp-opt (append itemfilter-block-keywords
 			      itemfilter-block-like-keywords)
 		      t)
-	  "\\>"))
+	  "\\_>"))
 
 (defconst itemfilter-condition-re
-  (concat "^\\s-*" (regexp-opt itemfilter-condition-keywords t) "\\>"))
+  (concat "^\\s-*" (regexp-opt itemfilter-condition-keywords t) "\\_>"))
 
 (defconst itemfilter-action-re
-  (concat "^\\s-*" (regexp-opt itemfilter-action-keywords t) "\\>"))
+  (concat "^\\s-*" (regexp-opt itemfilter-action-keywords t) "\\_>"))
 
 (defconst itemfilter-action-like-re
-  (concat "^\\s-*" (regexp-opt itemfilter-action-like-keywords t) "\\>"))
+  (concat "^\\s-*" (regexp-opt itemfilter-action-like-keywords t) "\\_>"))
 
 (defconst itemfilter-indent-re
   (concat "^\\s-*"
 	  (regexp-opt (append itemfilter-condition-keywords
 			      itemfilter-action-keywords
 			      itemfilter-action-like-keywords))
-	  "\\>"))
+	  "\\_>"))
 
 (defconst itemfilter-constant-re
-  (concat "\\<" (regexp-opt itemfilter-constant-keywords) "\\>"))
+  (concat "\\_<" (regexp-opt itemfilter-constant-keywords) "\\_>"))
 
 (defconst itemfilter-completion-keywords
   (append itemfilter-block-keywords
