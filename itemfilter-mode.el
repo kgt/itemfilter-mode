@@ -224,7 +224,7 @@
       (save-excursion
 	(indent-line-to indent))))
   (when (< (current-column) (current-indentation))
-    (skip-chars-forward " \t")))
+    (skip-syntax-forward "-")))
 
 (defun itemfilter--calculate-indent ()
   "Return the indentation level of the current line."
