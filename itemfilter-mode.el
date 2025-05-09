@@ -195,13 +195,6 @@
           itemfilter-action-like-keywords
           itemfilter-constant-keywords))
 
-(defvar itemfilter-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map [remap beginning-of-defun] 'itemfilter-beginning-of-block)
-    (define-key map [remap end-of-defun] 'itemfilter-end-of-block)
-    (define-key map [remap mark-defun] 'itemfilter-mark-block)
-    map))
-
 (defvar itemfilter-mode-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\" "\"" table)
@@ -275,22 +268,6 @@ Negative ARG means move backward."
   (interactive "p")
   (itemfilter-beginning-of-block (- (or arg 1))))
 
-(defun itemfilter-mark-block (&optional arg)
-  "Put mark at end of a block, point at beginning.
-With ARG, mark that many following blocks.
-Negative ARG means mark preceding blocks."
-  (interactive "p")
-  (let ((backward (and arg (< arg 0))))
-    (cond (backward
-           (itemfilter-end-of-block)
-           (push-mark)
-           (itemfilter-beginning-of-block (- arg)))
-          (t
-           (itemfilter-beginning-of-block)
-           (save-excursion
-             (itemfilter-end-of-block arg)
-             (push-mark))))))
-
 (defun itemfilter-completion-at-point ()
   "Function for `completion-at-point-functions' in `itemfilter-mode'."
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
@@ -310,6 +287,9 @@ Negative ARG means mark preceding blocks."
 
   (setq tab-width itemfilter-indent-level)
   (setq-local indent-line-function 'itemfilter-indent-line)
+
+  (setq-local beginning-of-defun-function #'itemfilter-beginning-of-block)
+  (setq-local end-of-defun-function #'itemfilter-end-of-block)
 
   (add-hook 'completion-at-point-functions #'itemfilter-completion-at-point nil t))
 
