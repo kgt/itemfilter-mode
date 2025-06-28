@@ -77,6 +77,7 @@
     "ItemLevel"
     "LinkedSockets"
     "MapTier"
+    "MemoryStrands"
     "Mirrored"
     "Quality"
     "Rarity"
@@ -90,8 +91,10 @@
     "SynthesisedItem"
     "TransfiguredGem"
     "UberBlightedMap"
+    "UnidentifiedItemTier"
     "WaystoneTier"
-    "Width"))
+    "Width"
+    "ZanaMemory"))
 
 (defconst itemfilter-action-keywords
   '("PlayAlertSound"
